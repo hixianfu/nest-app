@@ -11,6 +11,8 @@ import { DeptModule } from './dept/dept.module';
 import { AccountModule } from './account/account.module';
 import { UploadModule } from './upload/upload.module';
 import { MailModule } from './mail/mail.module';
+import { ThrottlerModule } from '@nestjs/throttler';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -28,6 +30,13 @@ import { MailModule } from './mail/mail.module';
       dateStrings: ['Date'],
       synchronize: true,
     }),
+    ThrottlerModule.forRoot([
+      {
+        name: 'default',
+        ttl: 60,
+        limit: 20
+      }
+    ]),
     UsersModule,
     RedisCacheModule,
     AuthModule,

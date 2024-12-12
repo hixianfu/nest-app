@@ -1,9 +1,10 @@
-import { Controller, Get, Param, Post, Body, Query, UseGuards, Put } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Query, Put, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './schemas/user.entity';
 import { FindOptionsWhere, UpdateResult } from 'typeorm';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { RegisterDTO } from './dto/register.dto';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller('users')
 @ApiTags('用户')
@@ -54,10 +55,10 @@ export class UsersController {
     }
 
     @Put(':id')
-    @ApiOperation({ summary: '更新用户信息' })  
+    @ApiOperation({ summary: '更新用户信息' })
     @ApiParam({ name: 'id', description: '用户ID', required: true })
     @ApiBody({ type: User })
-    update( @Body() updateData: Partial<User>, @Param('id') userId: number): Promise<UpdateResult> {
+    update(@Body() updateData: Partial<User>, @Param('id') userId: number): Promise<UpdateResult> {
         return this.usersService.updateByCondition(updateData, userId);
     }
 
@@ -66,5 +67,5 @@ export class UsersController {
     @ApiParam({ name: 'id', description: '用户ID', required: true })
     findById(@Param('id') id: number): Promise<User | null> {
         return this.usersService.findById(id);
-    }   
+    }
 }

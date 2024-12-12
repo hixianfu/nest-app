@@ -1,8 +1,9 @@
-import { Controller, Post, UseInterceptors, UploadedFile, Param } from '@nestjs/common';
+import { Controller, Post, UseInterceptors, UploadedFile, Param, UseGuards } from '@nestjs/common';
 import { UploadService } from './upload.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiParam, ApiProperty } from '@nestjs/swagger';
 import { ApiConsumes } from '@nestjs/swagger';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 
 class FileUploadDto {
   @ApiProperty({ type: 'string', format: 'binary' })
@@ -10,6 +11,8 @@ class FileUploadDto {
 }
 
 @Controller('upload')
+@UseGuards(ThrottlerGuard)
+@Throttle({ default: { ttl: 60, limit: 3 } })
 export class UploadController {
   constructor(private readonly uploadService: UploadService) { }
 
