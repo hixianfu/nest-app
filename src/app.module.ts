@@ -12,6 +12,8 @@ import { AccountModule } from './account/account.module';
 import { UploadModule } from './upload/upload.module';
 import { MailModule } from './mail/mail.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TaskService } from './task/task.service';
 
 @Module({
   imports: [
@@ -34,9 +36,10 @@ import { ThrottlerModule } from '@nestjs/throttler';
       {
         name: 'default',
         ttl: 60,
-        limit: 20
+        limit: 3
       }
     ]),
+    ScheduleModule.forRoot(),
     UsersModule,
     RedisCacheModule,
     AuthModule,
@@ -47,6 +50,6 @@ import { ThrottlerModule } from '@nestjs/throttler';
     MailModule
   ],
   controllers: [AppController],
-  providers: [AppService, ConfigService],
+  providers: [AppService, ConfigService, TaskService],
 })
 export class AppModule {}

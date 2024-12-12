@@ -4,10 +4,11 @@ import { User } from './schemas/user.entity';
 import { FindOptionsWhere, UpdateResult } from 'typeorm';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { RegisterDTO } from './dto/register.dto';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller('users')
 @ApiTags('用户')
+@UseGuards(ThrottlerGuard)
 @ApiBearerAuth('Authorization')
 export class UsersController {
     constructor(private readonly usersService: UsersService) { }

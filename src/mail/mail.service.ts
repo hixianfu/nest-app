@@ -5,6 +5,7 @@ import * as nodemailer from 'nodemailer';
 import generateCode from 'src/common/utils/generateCode';
 import { UsersService } from 'src/users/users.service';
 import * as mjml2html from 'mjml';
+import { User } from 'src/users/schemas/user.entity';
 
 @Injectable()
 export class MailService {
@@ -56,6 +57,29 @@ export class MailService {
             await this.transporter.sendMail(mailOptions);
 
             await this.redis.set(to, code, 'EX', 15 * 60);
+        } catch (error) {
+            console.error('发送邮件失败', error);
+            throw new Error('发送邮件失败');
+        }
+    }
+    
+    /**
+     * 发送生日邮件
+     * @param user 
+     * @returns 
+     */
+    async sendBirthdayEmail(user: User) {
+        const { name, email } = user;
+
+        const  mailOptions: nodemailer.SendMailOptions = {
+            from: process.env.MAIL_USER,
+            to: email,
+            subject: '生日快乐',
+            html: `<h1>生日快乐! ${name}</h1>`
+        }
+
+        try {
+            await this.transporter.sendMail(mailOptions);
         } catch (error) {
             console.error('发送邮件失败', error);
             throw new Error('发送邮件失败');
